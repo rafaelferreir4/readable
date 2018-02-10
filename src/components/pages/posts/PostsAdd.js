@@ -130,7 +130,7 @@ class PostsAdd extends Component {
           <h2>Your post was saved successfuly</h2>
         }
         <h2>{ postTitle }</h2>
-        { postAuthor !== '' &&
+        { (postAuthor !== '' && !this.state.showMessage) &&
           <small style={{ display: 'block', marginBottom: 20 }}>Post by: { postAuthor }</small>
         }
         <p>{ postBody }</p>

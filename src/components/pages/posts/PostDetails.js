@@ -36,9 +36,13 @@ class PostDetails extends Component {
 
     return (
       <div>
-        <h2>{ postTitle }</h2>
-        { postAuthor !== '' &&
-          <small style={{ display: 'block', marginBottom: 20 }}>Post by: { postAuthor }</small>
+        { this.props.match.params.postId !== 'add' &&
+          <h2>{ postTitle }</h2>
+        }
+        { (this.props.match.params.postId !== 'add' && postAuthor !== '') &&
+          <small style={{ display: 'block', marginBottom: 20 }}>
+            Post by: { postAuthor }
+          </small>
         }
         <p>{ postBody }</p>
         <Chip>{ postCategory }</Chip>

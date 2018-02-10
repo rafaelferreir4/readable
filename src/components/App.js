@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   render() {
-    const { leftMenu, toggleLeftMenu, posts } = this.props
+    const { leftMenu, toggleLeftMenu } = this.props
 
     return (
       <MuiThemeProvider>
@@ -47,7 +47,7 @@ class App extends Component {
             />
           </header>
           <div className="App-content">
-            <Route exact path='/' render={ () => (<Posts posts={ posts } />) } />
+            <Route exact path='/' component={ Posts } />
             <Route exact path='/posts/add' component={ PostsAdd } />
             <Route exact path='/posts/edit/:postId' component={ PostsAdd } />
             <Route exact path='/posts/:postId' component={ PostDetails } />

@@ -18,7 +18,14 @@ class Posts extends Component {
   }
 
   componentDidMount() {
-    this.getAllPosts()
+    const queryString = require('query-string')
+    const queryStringParsed = queryString.parse(window.location.search)
+
+    if (typeof queryStringParsed.category !== 'undefined') {
+      this.getPostByCategory(queryStringParsed.category)
+    } else {
+      this.getAllPosts()
+    }
   }
 
   getAllPosts() {
@@ -26,6 +33,27 @@ class Posts extends Component {
 
     // Getting all the posts.
     API.getAllPosts().then(posts => {
+      // Update the REDUX store with the API values.
+      getAllPosts(posts)
+
+      for (const post in posts) {
+        API.getCommentPerPost(posts[post].id).then(comment => {
+          this.setState({
+            postComments: {
+              ...this.state.postComments,
+              [posts[post].id]: comment.length
+            }
+          })
+        })
+      }
+    })
+  }
+
+  getPostByCategory = category => {
+    const { getAllPosts } = this.props
+
+    // Getting all the posts.
+    API.getPostByCategory(category).then(posts => {
       // Update the REDUX store with the API values.
       getAllPosts(posts)
 
@@ -56,8 +84,15 @@ class Posts extends Component {
     e.preventDefault()
   }
 
+  filterPostByCategory = category => {
+    this.props.history.push({
+      pathname: '/',
+      search: `category=${ category }`
+    })
+  }
+
   render() {
-    const { posts } = this.props
+    const { categories, posts } = this.props
     const style = {
       margin: '20px 0',
       padding: '20px 40px',
@@ -67,6 +102,18 @@ class Posts extends Component {
     return (
       <div>
         <h2>Posts</h2>
+        <small>FILTER BY CATEGORY</small>
+        { categories.map(category => {
+          return (
+            <Chip
+              key={ category.name }
+              style={{ display: 'inline-block', marginLeft: 15 }}
+              onClick={ () => this.filterPostByCategory(category.name) }
+            >
+              { category.name }
+            </Chip>
+          )
+        })}
         { posts.map(post => {
           return (
             <Paper key={ post.id } style={ style } zDepth={ 0 }>
@@ -79,7 +126,8 @@ class Posts extends Component {
                 <IconButton onClick={ () => this.votePost(post.id, 'upVote') }><ThumbUp /></IconButton>
                 <span>{ post.voteScore }</span>
                 <IconButton onClick={ () => this.votePost(post.id, 'downVote') }><ThumbDown /></IconButton>
-                <Link to={ `posts/edit/${ post.id }` } >Edit</Link>-
+                <Link to={ `posts/edit/${ post.id }` } >Edit</Link>
+                <span> | </span>
                 <Link to="#" onClick={ e => this.deletePost(e, post.id) }>Delete</Link>
                 <br />
                 <div>
@@ -96,6 +144,7 @@ class Posts extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   posts: state.posts,
+  categories: state.categories
 })
 
 const mapDispatchToProps = dispatch => ({
