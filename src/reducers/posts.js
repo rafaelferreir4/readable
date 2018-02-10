@@ -1,4 +1,9 @@
-import { GET_ALL_POSTS, CREATE_POST, UPVOTE_POST, DOWNVOTE_POST } from '../actions'
+import {
+  GET_ALL_POSTS,
+  CREATE_POST,
+  UPVOTE_POST,
+  DOWNVOTE_POST,
+} from '../actions'
 
 const posts = (state = [], action) => {
   switch (action.type) {

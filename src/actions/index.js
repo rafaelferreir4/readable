@@ -4,6 +4,7 @@ export const GET_ALL_POSTS = 'GET_ALL_POSTS'
 export const CREATE_POST = 'CREATE_POST'
 export const UPVOTE_POST = 'UPVOTE_POST'
 export const DOWNVOTE_POST = 'DOWNVOTE_POST'
+export const GET_COMMENTS_BY_POST = 'GET_COMMENTS_BY_POST'
 
 /* Left Menu */
 export const toggleLeftMenu = () => {
@@ -48,6 +49,13 @@ export const downvotePost = postId => {
   return {
     type: DOWNVOTE_POST,
     postId,
+  }
+}
+
+export const getCommentsByPost = comments => {
+  return {
+    type: GET_COMMENTS_BY_POST,
+    comments
   }
 }
 /* ENDOF: Posts */

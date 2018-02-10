@@ -2,10 +2,11 @@
 import React, { Component } from 'react'
 import { Chip } from 'material-ui'
 
-// Redux.
-import { connect } from 'react-redux'
+/* Custom DOM components */
+import Comments from './Comments'
+import CommentsForm from './CommentsForm'
 
-// API.
+/* API */
 import * as API from '../../../utils/API/API'
 
 class PostDetails extends Component {
@@ -33,19 +34,26 @@ class PostDetails extends Component {
 
   render() {
     const { postTitle, postAuthor, postBody, postCategory } = this.state
+    const postId = this.props.match.params.postId
 
     return (
       <div>
-        { this.props.match.params.postId !== 'add' &&
-          <h2>{ postTitle }</h2>
-        }
-        { (this.props.match.params.postId !== 'add' && postAuthor !== '') &&
-          <small style={{ display: 'block', marginBottom: 20 }}>
-            Post by: { postAuthor }
-          </small>
-        }
-        <p>{ postBody }</p>
-        <Chip>{ postCategory }</Chip>
+        <div className="post-details">
+          { this.props.match.params.postId !== 'add' &&
+            <h2>{ postTitle }</h2>
+          }
+          { (this.props.match.params.postId !== 'add' && postAuthor !== '') &&
+            <small style={{ display: 'block', marginBottom: 20 }}>
+              Post by: { postAuthor }
+            </small>
+          }
+          <p>{ postBody }</p>
+          <Chip>{ postCategory }</Chip>
+        </div>
+        <div className="post-comments">
+          <CommentsForm postId={ postId } />
+          <Comments postId={ postId } />
+        </div>
       </div>
     )
   }
