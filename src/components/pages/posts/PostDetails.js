@@ -2,16 +2,33 @@
 import React, { Component } from 'react'
 import { Chip } from 'material-ui'
 
+// Redux.
+import { connect } from 'react-redux'
+
+// API.
+import * as API from '../../../utils/API/API'
+
 class PostDetails extends Component {
   state = {
-    postTitle: '',
     postAuthor: '',
     postBody: '',
+    postTitle: '',
     postCategory: '',
   }
 
   componentDidMount() {
+    if (typeof this.props.match.params.postId !== 'undefined') {
+      const postId = this.props.match.params.postId
 
+      API.getPost(postId).then(post => {
+        this.setState({
+          postAuthor: post.author,
+          postBody: post.body,
+          postCategory: post.category,
+          postTitle: post.title,
+        })
+      })
+    }
   }
 
   render() {
