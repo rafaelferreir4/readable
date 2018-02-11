@@ -41,11 +41,11 @@ class Comments extends Component {
   deleteComment = (e, commentId) => {
     const { getCommentsByPost, postId } = this.props
 
-    API.deleteComment(commentId).then(
+    API.deleteComment(commentId).then(data => {
       API.getCommentsByPost(postId).then(comments => {
         getCommentsByPost(comments)
       })
-    )
+    })
 
     e.preventDefault()
   }
