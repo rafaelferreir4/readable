@@ -48,7 +48,7 @@ class App extends Component {
           </header>
           <div className="App-content">
             <Route exact path='/' component={ Posts } />
-            <Route exact path='/posts/add' component={ PostsAdd } />
+            <Route exact path='/post/add' component={ PostsAdd } />
             <Route exact path='/posts/edit/:postId' component={ PostsAdd } />
             <Route exact path='/posts/:postId' component={ PostDetails } />
           </div>

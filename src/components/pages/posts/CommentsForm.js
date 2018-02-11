@@ -6,7 +6,7 @@ import { FlatButton, TextField } from 'material-ui'
 import { connect } from 'react-redux'
 
 /* Actions */
-import { getCommentsByPost } from '../../../actions'
+import { changeCommentBody, getCommentsByPost } from '../../../actions'
 
 /* API */
 import * as API from '../../../utils/API/API'
@@ -15,7 +15,23 @@ class CommentsForm extends Component {
   state = {
     commentAuthor: '',
     commentBody: '',
-    showMessage: false
+    showMessage: false,
+    isEditing: typeof this.props.commentId !== 'undefined' ? true : false,
+  }
+
+  componentDidMount() {
+    const { isEditing } = this.state
+
+    if (isEditing) {
+      const { commentId } = this.props
+
+      API.getComment(commentId).then(comment => {
+        this.setState({
+          commentAuthor: comment.author,
+          commentBody: comment.body
+        })
+      })
+    }
   }
 
   handleCommentAuthorChange = e => {
@@ -26,10 +42,14 @@ class CommentsForm extends Component {
   }
 
   handleCommentBodyChange = e => {
+    const { changeCommentBody } = this.props
+
     this.setState({
       commentBody: e.target.value,
       showMessage: false,
     })
+
+    changeCommentBody(e.target.value)
   }
 
   saveComment = () => {
@@ -57,11 +77,16 @@ class CommentsForm extends Component {
   }
 
   render() {
-    const { commentAuthor, commentBody, showMessage } = this.state
+    const { commentAuthor, commentBody, isEditing, showMessage } = this.state
+    let commentHeader = 'LEAVE A COMMENT'
+
+    if (isEditing) {
+      commentHeader = 'EDIT YOUR COMMENT'
+    }
 
     return (
       <div>
-        <h4>LEAVE A COMMENT</h4>
+        <h4>{ commentHeader }</h4>
         <TextField
           floatingLabelText="Author"
           fullWidth={ true }
@@ -93,6 +118,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   getCommentsByPost: comments => dispatch(getCommentsByPost(comments)),
+  changeCommentBody: commentBody => dispatch(changeCommentBody(commentBody)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentsForm)

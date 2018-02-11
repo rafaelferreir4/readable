@@ -50,10 +50,12 @@ class PostDetails extends Component {
           <p>{ postBody }</p>
           <Chip>{ postCategory }</Chip>
         </div>
-        <div className="post-comments">
-          <CommentsForm postId={ postId } />
-          <Comments postId={ postId } />
-        </div>
+        { this.props.match.params.postId !== 'add' &&
+          <div className="post-comments">
+            <CommentsForm postId={ postId } />
+            <Comments postId={ postId } />
+          </div>
+        }
       </div>
     )
   }

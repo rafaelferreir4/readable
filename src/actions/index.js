@@ -5,6 +5,9 @@ export const CREATE_POST = 'CREATE_POST'
 export const UPVOTE_POST = 'UPVOTE_POST'
 export const DOWNVOTE_POST = 'DOWNVOTE_POST'
 export const GET_COMMENTS_BY_POST = 'GET_COMMENTS_BY_POST'
+export const UPVOTE_COMMENT = 'UPVOTE_COMMENT'
+export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT'
+export const CHANGE_COMMENT_BODY = 'CHANGE_COMMENT_BODY'
 
 /* Left Menu */
 export const toggleLeftMenu = () => {
@@ -56,6 +59,27 @@ export const getCommentsByPost = comments => {
   return {
     type: GET_COMMENTS_BY_POST,
     comments
+  }
+}
+
+export const upvoteComment = commentId => {
+  return {
+    type: UPVOTE_COMMENT,
+    commentId,
+  }
+}
+
+export const downvoteComment = commentId => {
+  return {
+    type: DOWNVOTE_COMMENT,
+    commentId,
+  }
+}
+
+export const changeCommentBody = commentBody => {
+  return {
+    type: CHANGE_COMMENT_BODY,
+    commentBody,
   }
 }
 /* ENDOF: Posts */

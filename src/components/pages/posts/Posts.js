@@ -1,22 +1,26 @@
 /* Global DOM components */
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Chip, IconButton, Paper } from 'material-ui'
-import { Comment, ThumbUp, ThumbDown } from 'material-ui-icons'
+import { IconButton, Chip, Paper, SelectField, MenuItem } from 'material-ui'
+import { Comment } from 'material-ui-icons'
 import moment from 'moment'
+
+/* Custom DOM components */
+import PostActions from './PostActions'
 
 /* Redux */
 import { connect } from 'react-redux'
 
 /* Actions */
-import { getAllPosts, upvotePost, downvotePost } from '../../../actions'
+import { getAllPosts } from '../../../actions'
 
 /* API */
 import * as API from '../../../utils/API/API'
 
 class Posts extends Component {
   state = {
-    postComments: {}
+    postComments: {},
+    sortingMethod: 'timestamp',
   }
 
   componentDidMount() {
@@ -37,49 +41,45 @@ class Posts extends Component {
 
     // Getting all the posts.
     API.getAllPosts().then(posts => {
+      posts.sort(this.sortPosts)
       // Update the REDUX store with the API values.
       getAllPosts(posts)
-
-      for (const post in posts) {
-        API.getCommentPerPost(posts[post].id).then(comment => {
-          this.setState({
-            postComments: {
-              ...this.state.postComments,
-              [posts[post].id]: comment.length
-            }
-          })
-        })
-      }
+      this.getCommentsPerPost(posts)
     })
   }
+
+  sortPosts = (a, b) => {
+    const { sortingMethod } = this.state
+
+    if (a[sortingMethod] > b[sortingMethod]) { return -1 }
+    if (a[sortingMethod] < b[sortingMethod]) { return 1 }
+
+    return 0;
+}
 
   getPostByCategory = category => {
     const { getAllPosts } = this.props
 
     // Getting all the posts.
     API.getPostByCategory(category).then(posts => {
+      posts.sort(this.sortPosts)
       // Update the REDUX store with the API values.
       getAllPosts(posts)
-
-      for (const post in posts) {
-        API.getCommentPerPost(posts[post].id).then(comment => {
-          this.setState({
-            postComments: {
-              ...this.state.postComments,
-              [posts[post].id]: comment.length
-            }
-          })
-        })
-      }
+      this.getCommentsPerPost(posts)
     })
   }
 
-  votePost = (postId, action) => {
-    const { upvotePost, downvotePost } = this.props
-
-    API.votePost(postId, action).then(data => {
-      action === 'upVote' ? upvotePost(postId) : downvotePost(postId)
-    })
+  getCommentsPerPost = posts => {
+    for (const post in posts) {
+      API.getCommentPerPost(posts[post].id).then(comment => {
+        this.setState({
+          postComments: {
+            ...this.state.postComments,
+            [posts[post].id]: comment.length
+          }
+        })
+      })
+    }
   }
 
   deletePost = (e, postId) => {
@@ -94,6 +94,19 @@ class Posts extends Component {
     this.props.history.push({
       search: `category=${ category }`
     })
+  }
+
+  handleSortingMethods = (event, index, value) => {
+    const queryString = require('query-string')
+    const queryStringParsed = queryString.parse(window.location.search)
+
+    if (typeof queryStringParsed.category !== 'undefined') {
+      this.getPostByCategory(queryStringParsed.category)
+    } else {
+      this.getAllPosts()
+    }
+
+    this.setState({ sortingMethod: value })
   }
 
   render() {
@@ -127,6 +140,18 @@ class Posts extends Component {
             reset
           </Chip>
         </div>
+        <div style={{ marginTop: 30 }}>
+        <small style={{ display: 'block' }}>SORT BY</small>
+        <SelectField
+          floatingLabelText="Sort by"
+          value={ this.state.sortingMethod }
+          onChange={ this.handleSortingMethods }
+        >
+          <MenuItem value="timestamp" primaryText="Date" />
+          <MenuItem value="voteScore" primaryText="Votes" />
+          <MenuItem value="commentCount" primaryText="Number of Comments" />
+        </SelectField>
+        </div>
         { posts.map(post => {
           return (
             <Paper key={ post.id } style={ style } zDepth={ 0 }>
@@ -139,17 +164,9 @@ class Posts extends Component {
                 { post.category }
               </Chip>
               <small style={{ display: 'block', marginTop: 15 }}>{ moment(post.timestamp).format('LLLL') }</small>
+              <PostActions deletePost={ this.deletePost } post={ post } />
               <div>
-                <IconButton onClick={ () => this.votePost(post.id, 'upVote') }><ThumbUp /></IconButton>
-                <span>{ post.voteScore }</span>
-                <IconButton onClick={ () => this.votePost(post.id, 'downVote') }><ThumbDown /></IconButton>
-                <Link to={ `posts/edit/${ post.id }` } >Edit</Link>
-                <span> | </span>
-                <Link to="#" onClick={ e => this.deletePost(e, post.id) }>Delete</Link>
-                <br />
-                <div>
-                  <IconButton><Comment /></IconButton>{ this.state.postComments[post.id] } Comment(s)
-                </div>
+                <IconButton><Comment /></IconButton>{ this.state.postComments[post.id] } Comment(s)
               </div>
             </Paper>
           )
@@ -169,8 +186,6 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   getAllPosts: posts => dispatch(getAllPosts(posts)),
-  upvotePost: postId => dispatch(upvotePost(postId)),
-  downvotePost: postId => dispatch(downvotePost(postId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Posts)

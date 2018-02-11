@@ -24,7 +24,7 @@ function LeftMenu(props) {
         </MenuItem>
         <MenuItem>
           <Link
-            to="/posts/add"
+            to="/post/add"
             onClick={ onRequestChange }
           >
             New Post
