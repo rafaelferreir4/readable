@@ -155,7 +155,7 @@ class Posts extends Component {
         { posts.map(post => {
           return (
             <Paper key={ post.id } style={ style } zDepth={ 0 }>
-              <Link to={`posts/${post.id}`}><h3 style={{ fontWeight: 500 }}>{ post.title }</h3></Link>
+              <Link to={`${post.category}/${post.id}`}><h3 style={{ fontWeight: 500 }}>{ post.title }</h3></Link>
               <small>Post by: { post.author }</small>
               <p>{ post.body }</p>
               <Chip

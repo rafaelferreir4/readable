@@ -9,6 +9,7 @@ import HeaderBar from './global/header/HeaderBar'
 import Posts from './pages/posts/Posts'
 import PostsAdd from './pages/posts/PostsAdd'
 import PostDetails from './pages/posts/PostDetails'
+import NotFound from './pages/404/NotFound'
 
 /* Redux */
 import { connect } from 'react-redux'
@@ -50,7 +51,8 @@ class App extends Component {
             <Route exact path='/' component={ Posts } />
             <Route exact path='/post/add' component={ PostsAdd } />
             <Route exact path='/posts/edit/:postId' component={ PostsAdd } />
-            <Route exact path='/posts/:postId' component={ PostDetails } />
+            <Route exact path='/:category/:postId' component={ PostDetails } />
+            <Route exact path='/404' component={ NotFound } />
           </div>
         {/* ENDOF: Header Components */}
         </div>

@@ -30,7 +30,7 @@ class PostActions extends Component {
         <IconButton onClick={ () => this.votePost(post.id, 'upVote') }><ThumbUp /></IconButton>
         <span>{ post.voteScore }</span>
         <IconButton onClick={ () => this.votePost(post.id, 'downVote') }><ThumbDown /></IconButton>
-        <Link to={ `posts/edit/${ post.id }` } >Edit</Link>
+        <Link to={ `/posts/edit/${ post.id }` } >Edit</Link>
         <span> | </span>
         <Link to="#" onClick={ e => this.props.deletePost(e, post.id) }>Delete</Link>
       </div>
