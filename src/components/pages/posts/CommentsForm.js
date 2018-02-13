@@ -84,10 +84,13 @@ class CommentsForm extends Component {
       commentHeader = 'EDIT YOUR COMMENT'
     }
 
+    const fieldDisabled = isEditing ? { disabled: true } : { disabled: false }
+
     return (
       <div>
         <h4>{ commentHeader }</h4>
         <TextField
+          { ...fieldDisabled }
           floatingLabelText="Author"
           fullWidth={ true }
           value={ commentAuthor }
@@ -102,8 +105,12 @@ class CommentsForm extends Component {
           value={ commentBody }
           onChange={ this.handleCommentBodyChange }
         />
-        <FlatButton onClick={ this.saveComment } label="Save" primary={ true } />
-        <FlatButton onClick={ this.resetForm } label="Reset" />
+        { !isEditing &&
+          <div>
+            <FlatButton onClick={ this.saveComment } label="Save" primary={ true } />
+            <FlatButton onClick={ this.resetForm } label="Reset" />
+          </div>
+        }
         { showMessage &&
           <h3>Comment added successfully</h3>
         }
