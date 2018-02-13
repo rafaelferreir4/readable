@@ -24,11 +24,10 @@ class Posts extends Component {
   }
 
   componentDidMount() {
-    const queryString = require('query-string')
-    const queryStringParsed = queryString.parse(window.location.search)
+    const category = window.location.pathname.replace('/', '')
 
-    if (typeof queryStringParsed.category !== 'undefined') {
-      this.getPostByCategory(queryStringParsed.category)
+    if (category !== '') {
+      this.getPostByCategory(category)
     } else {
       this.getAllPosts()
     }
@@ -91,9 +90,7 @@ class Posts extends Component {
   filterPostByCategory = category => {
     this.getPostByCategory(category)
 
-    this.props.history.push({
-      search: `category=${ category }`
-    })
+    this.props.history.push({ pathname: category })
   }
 
   handleSortingMethods = (event, index, value) => {
@@ -115,6 +112,10 @@ class Posts extends Component {
       margin: '20px 0',
       padding: '20px 40px',
       display: 'block',
+    }
+
+    if (this.props.match.params.category === '404') {
+      return <div />
     }
 
     return (

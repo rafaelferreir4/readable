@@ -12,6 +12,7 @@ import { formatString } from '../../../utils/helpers'
 class PostsAdd extends Component {
   state = {
     editingPost: false,
+    errorMessage: false,
     postAuthor: '',
     postBody: '',
     postCategory: '',
@@ -53,6 +54,19 @@ class PostsAdd extends Component {
 
   savePost = () => {
     const { editingPost } = this.state
+    const formValidated
+      = this.state.postAuthor !== ''
+      && this.state.postBody !== ''
+      && this.state.postCategory !== ''
+      && this.state.postTitle !== ''
+
+    if (!formValidated) {
+      this.setState({ errorMessage: true })
+
+      return false
+    } else {
+      this.setState({ errorMessage: false })
+    }
 
     if (!editingPost) {
       API.createPost({
@@ -84,6 +98,9 @@ class PostsAdd extends Component {
 
     return (
       <div>
+        { this.state.errorMessage !== false &&
+          <div className='error'>All fields are required</div>
+        }
         <h2>{ !editingPost ? 'Add a new post' : 'Edit Post'}</h2>
         <TextField
           floatingLabelText="Post Title"
